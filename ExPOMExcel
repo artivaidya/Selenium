@@ -1,0 +1,112 @@
+package com.ebanking.master;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+public class ExPOMExcel
+{
+	WebDriver driver;
+	
+	@BeforeTest
+	public void Login() 
+	{
+		System.setProperty("webdriver.chrome.driver", "C:\\Users\\Ancha\\Downloads\\chromedriver_win32 (3).zip\\chromedriver.exe");
+		driver= new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.get("http://122.175.8.158/ranford2");
+		
+		RanfordHP RHP= PageFactory.initElements(driver,RanfordHP.class);
+		RHP.login();
+		
+		
+	}
+
+	@Test
+	public void Rolec() throws IOException 
+	{
+		//to get data from Excel
+		FileInputStream FIS=new FileInputStream("C:\\Eclipse_Selenium\\eclipse-workspace\\EBanking\\src\\com\\ebanking\\Testdata\\Role.xlsx");
+XSSFWorkbook WB=new XSSFWorkbook(FIS);
+		
+		//sheet
+		XSSFSheet WS=WB.getSheet("Sheet1");
+		
+		//Row count
+		int Rcount=WS.getLastRowNum();
+		System.out.println(Rcount);
+		
+		//multiple iteration----Loop
+		
+		//for loop
+		
+		for (int i = 1; i <=Rcount; i++) 
+		{
+			//row
+			XSSFRow WR=WS.getRow(i);
+			//cell
+			XSSFCell WC= WR.getCell(0);
+			XSSFCell WC1=WR.getCell(1);
+			
+			//to pass the data to result cell we use create cell
+			
+			XSSFCell WC2=WR.createCell(2);
+			
+			//cell value
+			String Rname=WC.getStringCellValue();
+			String Rtype=WC1.getStringCellValue();		
+			
+
+			AdminHP AHP=PageFactory.initElements(driver,AdminHP.class);
+			AHP.Rol();
+			
+			RoleHP ROHP=PageFactory.initElements(driver,RoleHP.class);
+			ROHP.NR();
+			
+			NRcreationHP NRHP=PageFactory.initElements(driver,NRcreationHP.class);
+			NRHP.NCRE(Rname,Rtype);
+			
+			driver.switchTo().alert().accept();
+			
+			ROHP.HB();
+			
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	}
+	
+	
+}
